@@ -1,6 +1,8 @@
 name: Deploy
 on:
-  - push
+  push:
+    branches:
+      - main
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
@@ -20,7 +22,7 @@ jobs:
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          if (git diff docs/index.html --shortstat | grep '[0-9]'); then \
+          if (git diff --shortstat docs/index.html | grep '[0-9]'); then \
             git add docs/index.html
             git commit -m "Update docs"
             git push origin HEAD:${GITHUB_REF}
